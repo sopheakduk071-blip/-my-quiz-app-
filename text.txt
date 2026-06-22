@@ -1,0 +1,1103 @@
+```html
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Quest Grade 6 - ពិភពហ្គេមគណិតវិទ្យា</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Gaming Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts for Khmer Language -->
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;600;700&family=Hanuman:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Kantumruy Pro', sans-serif;
+            background-color: #0d0e15;
+        }
+        .gaming-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .gaming-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.4);
+        }
+        /* Custom scrollbar for game feeling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #11131e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4c1d95;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6d28d9;
+        }
+    </style>
+</head>
+<body class="text-gray-100 min-h-screen flex flex-col selection:bg-purple-500 selection:text-white">
+
+    <!-- TOP NAVIGATION BAR / STATUS BOARD -->
+    <header class="border-b border-purple-900/40 bg-[#11131e]/90 sticky top-0 z-50 backdrop-blur-md px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <!-- Logo & Avatar -->
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center text-2xl shadow-lg shadow-purple-500/20 animate-bounce">
+                    🚀
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">MATH QUEST v1.0</h1>
+                    <p class="text-xs text-gray-400 font-mono">FOR GENERATION ALPHA ⚡</p>
+                </div>
+            </div>
+
+            <!-- Global Scoreboard -->
+            <div class="flex items-center gap-4 bg-[#1b1e2e] px-4 py-2 rounded-full border border-purple-500/20">
+                <div class="flex items-center gap-2">
+                    <span class="text-yellow-400 text-lg">🪙</span>
+                    <span id="score-coins" class="font-bold text-yellow-300">0</span>
+                    <span class="text-xs text-yellow-500">កាក់</span>
+                </div>
+                <div class="h-4 w-px bg-purple-900/60"></div>
+                <div class="flex items-center gap-2">
+                    <span class="text-cyan-400 text-lg">🏆</span>
+                    <span id="score-quests" class="font-bold text-cyan-300">0/12</span>
+                    <span class="text-xs text-cyan-500">បេសកកម្ម</span>
+                </div>
+                <div class="h-4 w-px bg-purple-900/60"></div>
+                <!-- Reset Button -->
+                <button onclick="resetGame()" class="text-xs text-red-400 hover:text-red-300 transition-colors" title="ចាប់ផ្តើមលេងឡើងវិញ">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONSOLE CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- LEFT COLUMN: QUEST MAP (List of 12 Quests) -->
+        <section class="lg:col-span-5 flex flex-col gap-4">
+            <div class="flex justify-between items-center bg-[#11131e] p-3 rounded-xl border border-purple-900/30">
+                <span class="font-semibold text-purple-300"><i class="fa-solid fa-map-location-dot mr-2"></i>ផែនទីបេសកកម្មទាំង ១២</span>
+                <span class="text-xs bg-purple-900/50 text-purple-300 px-2 py-1 rounded">ជ្រើសរើសវគ្គដើម្បីឆ្លង</span>
+            </div>
+
+            <!-- Scrollable Quest Cards Container -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-3 max-h-[calc(100vh-200px)] overflow-y-auto pr-1" id="quest-list">
+                <!-- Quest cards will be dynamically injected here by JS -->
+            </div>
+        </section>
+
+        <!-- RIGHT COLUMN: INTERACTIVE PLAYGROUND (Learning, Calculator Simulation, and Quiz) -->
+        <section class="lg:col-span-7 flex flex-col gap-4 bg-[#11131e] p-5 rounded-2xl border border-purple-900/30 min-h-[500px]" id="playground-container">
+            <!-- Default Welcome Panel (Shown before selecting a quest) -->
+            <div id="welcome-panel" class="flex flex-col items-center justify-center text-center h-full py-12 px-4">
+                <div class="w-24 h-24 rounded-full bg-purple-900/20 text-purple-400 flex items-center justify-center text-5xl mb-6 animate-pulse">
+                    🎮
+                </div>
+                <h2 class="text-2xl font-bold text-white mb-2">សូមស្វាគមន៍មកកាន់ MATH QUEST!</h2>
+                <p class="text-gray-400 max-w-md text-sm leading-relaxed mb-6">
+                    សូមជ្រើសរើសបេសកកម្មគណិតវិទ្យាណាមួយនៅខាងឆ្វេងដៃ ដើម្បីចាប់ផ្តើមរៀនសប្បាយៗ ពិសោធន៍តួលេខ និងដោះស្រាយបញ្ហាដើម្បីទទួលបានកាក់មាស!
+                </p>
+                <div class="bg-purple-950/40 border border-purple-500/20 rounded-xl p-4 max-w-sm">
+                    <span class="text-yellow-400">💡 គន្លឹះ៖</span> ប្អូនៗអាចផ្លាស់ប្តូរលេខនៅក្នុងបន្ទប់ពិសោធន៍ ដើម្បីមើលរូបមន្តគណនាភ្លាមៗ!
+                </div>
+            </div>
+
+            <!-- Active Quest Workspace (Hidden by default, shown when quest is active) -->
+            <div id="quest-workspace" class="hidden flex flex-col gap-6">
+                <!-- Workspace Header -->
+                <div class="flex items-start justify-between border-b border-purple-900/30 pb-4">
+                    <div class="flex items-center gap-3">
+                        <span id="active-quest-icon" class="text-4xl">🎯</span>
+                        <div>
+                            <span id="active-quest-badge" class="text-xs bg-purple-900 text-purple-300 font-bold px-2 py-0.5 rounded-full">បេសកកម្ម ០១</span>
+                            <h2 id="active-quest-title" class="text-xl font-bold text-white mt-1">ស្វែងរកអាថ៌កំបាំង %</h2>
+                        </div>
+                    </div>
+                    <!-- Close workspace and back to welcome -->
+                    <button onclick="closeWorkspace()" class="text-gray-400 hover:text-white bg-[#1b1e2e] p-2 rounded-full transition-colors">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Learning/Gaming Tabs Toggle -->
+                <div class="flex bg-[#1b1e2e] p-1 rounded-xl border border-purple-900/20">
+                    <button id="tab-learn" onclick="switchTab('learn')" class="flex-1 py-2 text-sm font-semibold rounded-lg text-white bg-purple-600 transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-book-open"></i> ១. រៀនយល់ដឹង
+                    </button>
+                    <button id="tab-lab" onclick="switchTab('lab')" class="flex-1 py-2 text-sm font-semibold rounded-lg text-gray-400 hover:text-white transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-flask"></i> 🧪 ២. ពិសោធន៍លេខ
+                    </button>
+                    <button id="tab-quiz" onclick="switchTab('quiz')" class="flex-1 py-2 text-sm font-semibold rounded-lg text-gray-400 hover:text-white transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-gamepad"></i> 🎮 ៣. ល្បងប្រាជ្ញា
+                    </button>
+                </div>
+
+                <!-- TAB CONTENT 1: LEARN (The 4 pedagogical pillars) -->
+                <div id="content-learn" class="tab-content flex flex-col gap-5">
+                    <!-- Original Question -->
+                    <div class="bg-indigo-950/30 border-l-4 border-indigo-500 p-3 rounded-r-xl">
+                        <p class="text-xs text-indigo-400 uppercase tracking-wider font-bold">ប្រធានលំហាត់ដើម៖</p>
+                        <p id="quest-original" class="text-gray-300 mt-1 italic text-sm">...</p>
+                    </div>
+
+                    <!-- 1. What does the question tell us? -->
+                    <div class="bg-[#1b1e2e] p-4 rounded-xl border border-purple-900/10">
+                        <div class="flex items-center gap-2 text-cyan-400 font-semibold mb-2">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <span>១. ការវិភាគបំណែកប្រធានលំហាត់ (តើគេប្រាប់អ្វីខ្លះ?)</span>
+                        </div>
+                        <div id="learn-info" class="text-sm text-gray-300 space-y-1 pl-6 list-disc">
+                            <!-- Dynamic insertion -->
+                        </div>
+                    </div>
+
+                    <!-- 2. Think tips -->
+                    <div class="bg-[#1b1e2e] p-4 rounded-xl border border-purple-900/10">
+                        <div class="flex items-center gap-2 text-yellow-400 font-semibold mb-2">
+                            <i class="fa-solid fa-lightbulb"></i>
+                            <span>២. គន្លឹះគិត (យុទ្ធសាស្ត្រដោះស្រាយ)</span>
+                        </div>
+                        <p id="learn-tips" class="text-sm text-gray-300 pl-6 leading-relaxed">
+                            <!-- Dynamic insertion -->
+                        </p>
+                    </div>
+
+                    <!-- 3. Steps and formulas -->
+                    <div class="bg-[#1b1e2e] p-4 rounded-xl border border-purple-900/10">
+                        <div class="flex items-center gap-2 text-green-400 font-semibold mb-2">
+                            <i class="fa-solid fa-square-root-variable"></i>
+                            <span>៣. ជំហានដោះស្រាយតាមរូបមន្ត</span>
+                        </div>
+                        <div id="learn-steps" class="text-sm text-gray-300 pl-6 space-y-2">
+                            <!-- Dynamic insertion -->
+                        </div>
+                    </div>
+
+                    <!-- 4. Real Life application -->
+                    <div class="bg-[#1b1e2e] p-4 rounded-xl border border-purple-900/10">
+                        <div class="flex items-center gap-2 text-pink-400 font-semibold mb-2">
+                            <i class="fa-solid fa-earth-americas"></i>
+                            <span>៤. របកគំហើញក្នុងជីវិតពិត</span>
+                        </div>
+                        <p id="learn-reallife" class="text-sm text-gray-300 pl-6 leading-relaxed">
+                            <!-- Dynamic insertion -->
+                        </p>
+                    </div>
+                </div>
+
+                <!-- TAB CONTENT 2: INTERACTIVE LAB (Live Sliders & Calculators) -->
+                <div id="content-lab" class="tab-content hidden flex flex-col gap-6">
+                    <div class="text-center">
+                        <h3 class="text-lg font-bold text-purple-400">🧪 មន្ទីរពិសោធន៍គណិតវិទ្យារស់រវើក</h3>
+                        <p class="text-xs text-gray-400 mt-1">សាកល្បងផ្លាស់ប្តូរតម្លៃលេខដោយទាញរបារខាងក្រោម ដើម្បីមើលការដោះស្រាយស្វ័យប្រវត្ត!</p>
+                    </div>
+
+                    <!-- Dynamic Slider Input Area -->
+                    <div class="bg-[#1b1e2e] p-5 rounded-2xl border border-purple-900/20 flex flex-col gap-6" id="lab-controls">
+                        <!-- Controls will be injected dynamically based on selected quest -->
+                    </div>
+
+                    <!-- Real-time Mathematical Proof Screen -->
+                    <div class="bg-black/40 p-5 rounded-xl border border-green-500/30 font-mono text-green-400 shadow-inner">
+                        <div class="flex items-center justify-between mb-2 pb-2 border-b border-green-500/20 text-xs">
+                            <span>📟 លទ្ធផលបញ្ជាក់ពីម៉ាស៊ីនគិតលេខ៖</span>
+                            <span class="animate-pulse bg-green-500/10 text-green-400 px-1.5 py-0.5 rounded">ONLINE</span>
+                        </div>
+                        <div id="lab-calculation" class="text-sm space-y-2">
+                            <!-- Dynamic real-time calculation steps -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB CONTENT 3: GAMIFIED QUIZ (The Challenge) -->
+                <div id="content-quiz" class="tab-content hidden flex flex-col gap-6">
+                    <div class="text-center">
+                        <h3 class="text-lg font-bold text-yellow-400">🎮 ល្បងប្រាជ្ញាឆ្លងវគ្គសន្សំបាក់សៀក</h3>
+                        <p class="text-xs text-gray-400 mt-1">ដោះស្រាយសំណួរខាងក្រោមឱ្យបានត្រឹមត្រូវ ដើម្បីទទួលបានកាក់មាស និងបើកវគ្គបន្ទាប់!</p>
+                    </div>
+
+                    <div class="bg-[#1b1e2e] p-6 rounded-2xl border border-purple-900/20 flex flex-col gap-5">
+                        <!-- Question Label -->
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl">❓</span>
+                            <div>
+                                <p class="text-xs text-purple-400 font-bold uppercase tracking-wide">សំណួរចោទសួរ៖</p>
+                                <p id="quiz-question" class="text-white font-semibold mt-1">...</p>
+                            </div>
+                        </div>
+
+                        <!-- Answer input controls -->
+                        <div class="mt-4 flex flex-col gap-4">
+                            <div class="flex gap-3">
+                                <input type="number" id="quiz-answer-input" step="any" placeholder="បញ្ចូលចម្លើយជាលេខ..." class="flex-grow bg-[#0d0e15] border border-purple-900/50 rounded-xl px-4 py-3 text-lg font-bold text-center text-yellow-300 focus:outline-none focus:border-purple-500 transition-colors">
+                                <span id="quiz-unit-badge" class="bg-purple-950/60 border border-purple-900/50 px-4 flex items-center rounded-xl font-bold text-purple-300">%</span>
+                            </div>
+                            
+                            <button onclick="submitAnswer()" class="w-full bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-400 hover:to-amber-500 text-[#0d0e15] font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 text-lg shadow-lg shadow-amber-500/10">
+                                <i class="fa-solid fa-circle-check"></i> ផ្ទៀងផ្ទាត់ចម្លើយ!
+                            </button>
+                        </div>
+
+                        <!-- Result Feedback Box -->
+                        <div id="quiz-feedback" class="hidden p-4 rounded-xl flex items-center gap-3">
+                            <span id="feedback-icon" class="text-2xl"></span>
+                            <div>
+                                <p id="feedback-title" class="font-bold text-sm"></p>
+                                <p id="feedback-desc" class="text-xs mt-0.5"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#0b0c12] border-t border-purple-900/30 py-4 text-center text-xs text-gray-500 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <span>រក្សាសិទ្ធិគ្រប់យ៉ាង ២០២៦ © ពិភពគណិតវិទ្យាថ្នាក់ទី៦ ជំនាន់ Alpha</span>
+            <span class="flex items-center gap-1">បង្កើតឡើងដោយក្តីស្រឡាញ់សម្រាប់សិស្សានុសិស្ស <i class="fa-solid fa-heart text-pink-500"></i></span>
+        </div>
+    </footer>
+
+    <!-- SUCCESS CONFETTI COMPONENT -->
+    <div id="confetti-container" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
+
+    <!-- SOUND SYNTHESIZER -->
+    <script>
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioCtx();
+            }
+        }
+
+        function playSound(type) {
+            initAudio();
+            if (!audioCtx) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'coin') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, now); // D5
+                osc.frequency.setValueAtTime(880, now + 0.1);   // A5
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(80, now + 0.25);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'level-up') {
+                const freqs = [261.63, 329.63, 392.00, 523.25];
+                freqs.forEach((freq, idx) => {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.connect(g);
+                    g.connect(audioCtx.destination);
+                    o.type = 'triangle';
+                    o.frequency.setValueAtTime(freq, now + (idx * 0.08));
+                    g.gain.setValueAtTime(0.1, now + (idx * 0.08));
+                    g.gain.exponentialRampToValueAtTime(0.001, now + 0.4 + (idx * 0.08));
+                    o.start(now + (idx * 0.08));
+                    o.stop(now + 0.5 + (idx * 0.08));
+                });
+            }
+        }
+    </script>
+
+    <!-- QUEST DATA & INTERACTION LOGIC (FULL 12 QUESTS) -->
+    <script>
+        const questsData = [
+            {
+                id: 1,
+                title: "ស្វែងរកអាថ៌កំបាំង n%",
+                icon: "🎯",
+                original: "តើ n ស្មើប៉ុន្មាន % នៃ 48 បើគេដឹងថាស្មើ 6?",
+                badge: "បេសកកម្ម ០១",
+                unit: "%",
+                answer: 12.5,
+                learn: {
+                    info: [
+                        "ចំនួនសរុប (ចំនួនគោល) = 48",
+                        "តម្លៃផ្នែកខ្លះដែលគេយកទៅធៀប = 6"
+                    ],
+                    tips: "ចូរស្រមៃថាប្អូនមាននំខេកមួយដុំកាត់ជា 48 ចំណែកតូចៗ។ ប្អូនញ៉ាំអស់ 6 ចំណែក។ ដើម្បីដឹងថា 6 ត្រូវជាប៉ុន្មានភាគរយ យើងយក 6 ចែកនឹង 48 រួចគុណនឹង 100%!",
+                    steps: [
+                        "រូបមន្តរកភាគរយ៖ P = (ចំនួនផ្នែក ÷ ចំនួនសរុប) × 100%",
+                        "គណនា៖ n = (6 ÷ 48) × 100 = 12.5%"
+                    ],
+                    reallife: "ឧបមាថាទូរសព្ទប្អូនសាកថ្មបាន 48 នាទី ទើបពេញ។ បើប្អូនសាកបាន 6 នាទី មានន័យថាប្អូនសាកថ្មបាន 12.5% ហើយ! 🔋"
+                },
+                lab: {
+                    inputs: [
+                        { id: "v1", label: "ចំនួនផ្នែកដែលដកស្រង់ (ឧ. ៦)", val: 6, min: 1, max: 100, step: 1 },
+                        { id: "v2", label: "ចំនួនសរុបទាំងអស់ (ឧ. ៤៨)", val: 48, min: 1, max: 200, step: 1 }
+                    ],
+                    calc: (v1, v2) => {
+                        const pct = ((v1 / v2) * 100).toFixed(2);
+                        return `
+                            <div><strong>រូបមន្ត៖</strong> (ចំនួនផ្នែក / ចំនួនសរុប) × 100%</div>
+                            <div class="text-xl text-yellow-300">(${v1} ÷ ${v2}) × 100% = <span class="text-green-300 font-bold">${pct}%</span></div>
+                            <div class="mt-2 text-xs text-gray-400">នេះមានន័យថា ចំនួន ${v1} គឺស្មើនឹង ${pct}% នៃចំនួនសរុប ${v2}។</div>
+                        `;
+                    }
+                },
+                quiz: {
+                    question: "តើ n ស្មើប៉ុន្មាន % នៃ 48 បើគេដឹងថាស្មើ 6?",
+                    hint: "គណនា (6 ÷ 48) × 100"
+                }
+            },
+            {
+                id: 2,
+                title: "បង្វិលត្រីវិស័យមុំ 360°",
+                icon: "🧭",
+                original: "បើ 100% តំណាងឱ្យមុំ 360° ។ តើ 40% តំណាងឱ្យមុំប៉ុន្មាន?",
+                badge: "បេសកកម្ម ០២",
+                unit: "ដឺក្រេ (°)",
+                answer: 144,
+                learn: {
+                    info: [
+                        "តម្លៃភាគរយសរុប 100% គឺស្មើនឹងមុំ 360° (មុំពេញវង់មួយជុំ)",
+                        "ភាគរយដែលត្រូវស្វែងរក = 40%"
+                    ],
+                    tips: "សមាមាត្រត្រីគុណ (គុណខ្វែង)! បើ 100% គឺ 360° នោះ 1% ស្មើនឹង 3.6° (360 ÷ 100)។ ចង់ដឹង 40% យក 40 ទៅគុណនឹង 3.6°។",
+                    steps: [
+                        "តាមវិធានត្រីគុណ៖ មុំ = (40% × 360°) ÷ 100%",
+                        "គណនា៖ មុំ = 40 × 3.6 = 144°"
+                    ],
+                    reallife: "ជំនាញនេះជួយប្អូនៗក្នុងការគូរ ក្រាហ្វចម្លៀក (Pie Chart) សម្រាប់បង្ហាញទិន្នន័យចំណូលចិត្ត ឬស្ថិតិក្នុងសាលារៀនឱ្យស្អាត!"
+                },
+                lab: {
+                    inputs: [
+                        { id: "v1", label: "ភាគរយដែលចង់រក (%)", val: 40, min: 1, max: 100, step: 1 },
+                        { id: "v2", label: "មុំពេញវង់សរុប (ដឺក្រេ)", val: 360, min: 180, max: 360, step: 10 }
+                    ],
+                    calc: (v1, v2) => {
+                        const angle = ((v1 / 100) * v2).toFixed(1);
+                        return `
+                            <div><strong>រូបមន្ត៖</strong> (ភាគរយ ÷ 100) × មុំសរុប</div>
+                            <div class="text-xl text-yellow-300">(${v1} ÷ 100) × ${v2}° = <span class="text-green-300 font-bold">${angle}°</span></div>
+                            <div class="mt-2 text-xs text-gray-400">មុំ ${angle}° គឺជាផ្នែកចម្លៀកតំណាងឱ្យ ${v1}% នៃរង្វង់មូល។</div>
+                        `;
+                    }
+                },
+                quiz: {
+                    question: "បើ 100% តំណាងឱ្យមុំ 360° តើ 40% តំណាងឱ្យមុំប៉ុន្មានដឺក្រេ?",
+                    hint: "យក 40 × 3.6"
+                }
+            },
+            {
+                id: 3,
+                title: "ជំនួញកសិដ្ឋានមាន់ទា",
+                icon: "🐔",
+                original: "កសិករម្នាក់លក់មាន់បាន 60,000៛ លក់ទាបានតិចជាងមាន់ 45,000៛ ហើយយកលុយលក់ទាទៅទិញចំណីអស់ 20%។ តើគាត់ទិញចំណីអស់លុយប៉ុន្មាន?",
+                badge: "បេសកកម្ម ០៣",
+                unit: "រៀល (៛)",
+                answer: 3000,
+                learn: {
+                    info: [
+                        "ប្រាក់លក់មាន់បាន = 60,000 ៛",
+                        "ប្រាក់លក់ទាបាន = តិចជាងមាន់ 45,000 ៛",
+                        "ភាគរយទិញចំណី = 20% នៃប្រាក់លក់ទា"
+                    ],
+                    tips: "យើងត្រូវរកប្រាក់បានពីការលក់ទាសិន ព្រោះចំណីគឺទិញចេញពីលុយលក់ទា! រួចទើបគណនា 20% នៃលុយទានោះ។",
+                    steps: [
+                        "ជំហាន ១ (រកលុយទា)៖ 60,000 ៛ - 45,000 ៛ = 15,000 ៛",
+                        "ជំហាន ២ (លុយចំណី)៖ 15,000 ៛ × 20% = 3,000 ៛"
+                    ],
+                    reallife: "នេះគឺជាការចេះគ្រប់គ្រងថវិកាកសិដ្ឋានឆ្លាតវៃ (Financial Literacy) យកចំណូលចំណែកខ្លះទៅវិនិយោគទិញចំណីសត្វឡើងវិញ!"
+                },
+                lab: {
+                    inputs: [
+                        { id: "v1", label: "លុយលក់មាន់ (៛)", val: 60000, min: 50000, max: 200000, step: 5000 },
+                        { id: "v2", label: "លក់ទាបានតិចជាង (៛)", val: 45000, min: 10000, max: 48000, step: 1000 },
+                        { id: "v3", label: "ភាគរយទិញចំណី (%)", val: 20, min: 5, max: 100, step: 5 }
+                    ],
+                    calc: (v1, v2, v3) => {
+                        const duck = v1 - v2;
+                        const food = (duck * (v3 / 100)).toFixed(0);
+                        return `
+                            <div><strong>ជំហាន ១ (រកលុយទា)៖</strong> ${v1.toLocaleString()} - ${v2.toLocaleString()} = ${duck.toLocaleString()} ៛</div>
+                            <div><strong>ជំហាន ២ (លុយចំណី)៖</strong> ${duck.toLocaleString()} × ${v3}%</div>
+                            <div class="text-xl text-yellow-300">លុយចំណី = <span class="text-green-300 font-bold">${Number(food).toLocaleString()} ៛</span></div>
+                        `;
+                    }
+                },
+                quiz: {
+                    question: "តើគាត់ទិញចំណីអស់ប្រាក់ប៉ុន្មានរៀល?",
+                    hint: "លុយលក់ទា = 60,000 - 45,000 = 15,000៛។ រួចគណនា 20% នៃ 15,000៛"
+                }
+            },
+            {
+                id: 4,
+                title: "ម៉ាស៊ីនបោកគក់ទំនើប",
+                icon: "🧺",
+                original: "ម៉ាស៊ីនបោកគក់មួយគ្រឿងថ្លៃ 480,000 រៀល។ កាលណាលក់ចុះថ្លៃ 6.2% នៃតម្លៃនោះ តើគេទិញម៉ាស៊ីនបោកគក់នោះអស់ប្រាក់ប៉ុន្មាន?",
+                badge: "បេសកកម្ម ០៤",
+                unit: "រៀល (៛)",
+                answer: 450240,
+                learn: {
+                    info: [
+                        "តម្លៃដើមម៉ាស៊ីន = 480,000 រៀល",
+                        "ភាគរយបញ្ចុះតម្លៃ = 6.2%"
+                    ],
+                    tips: "ពាក្យថា 'បញ្ចុះតម្លៃ' មានន័យថាយើងត្រូវបង់លុយតិចជាងមុន។ យើងរកប្រាក់ដែលបានបញ្ចុះរួចយកទៅដកចេញពីតម្លៃដើម។",
+                    steps: [
+                        "ប្រាក់បញ្ចុះតម្លៃ៖ 480,000 × 6.2% = 29,760 រៀល",
+                        "តម្លៃលក់ពិត៖ 480,000 - 29,760 = 450,240 រៀល"
+                    ],
+                    reallife: "ពេលប្អូនៗដើរផ្សារទំនើបឃើញស្លាកលក់បញ្ចុះតម្លៃ (Discount %) ប្អូនអាចប្រើរូបមន្តនេះដើម្បីគណនាដឹងថាយើងត្រូវបង់លុយប៉ុន្មានភ្លាមៗ!"
+                },
+                lab: {
+                    inputs: [
+                        { id: "v1", label: "តម្លៃដើម (៛)", val: 480000, min: 100000, max: 1000000, step: 10000 },
+                        { id: "v2", label: "បញ្ចុះតម្លៃ (%)", val: 6.2, min: 1, max: 50, step: 0.1 }
+                    ],
+                    calc: (v1, v2) => {
+                        const discount = v1 * (v2 / 100);
+                        const finalPrice = v1 - discount;
+                        return `
+                            <div><strong>ប្រាក់ដែលបញ្ចុះរួច៖</strong> ${v1.toLocaleString()} × ${v2}% = ${discount.toFixed(0)} ៛</div>
+                            <div class="text-xl text-yellow-300">តម្លៃត្រូវបង់ = <span class="text-green-300 font-bold">${Math.round(finalPrice).toLocaleString()} ៛</span></div>
+                        `;
+                    }
+                },
+                quiz: {
+                    question: "តើគេទិញម៉ាស៊ីនបោកគក់នោះអស់ប្រាក់ប៉ុន្មានរៀល?",
+                    hint: "ប្រាក់បញ្ចុះគឺ 480,000 × 0.062 = 29,760៛។ យក 480,000 - 29,760"
+                }
+            },
+            {
+                id: 5,
+                title: "ដោះកូដតម្លៃកង់",
+                icon: "🚲",
+                original: "កង់មួយគ្រឿងលក់ក្នុងតម្លៃ 65 ដុល្លារ គឺចំណេញបាន 40% នៃតម្លៃដើម។ តើតម្លៃដើមរបស់កង់នោះមានតម្លៃប៉ុន្មាន?",
+                badge: "បេសកកម្ម ០៥",
+                unit: "ដុល្លារ ($)",
+                answer: 46.43,
+                learn: {
+                    info: [
+                        "តម្លៃលក់ចេញ = 65 ដុល្លារ",
+                        "ភាគរយចំណេញ = 40% នៃតម្លៃដើម"
+                    ],
+                    tips: "តម្លៃលក់ចេញ 65$ គឺជាតម្លៃដើម (100%) បូកនឹងចំណេញ (40%)។ ដូច្នេះ 65$ គឺស្មើនឹង 140% នៃតម្លៃដើម។",
+                    steps: [
+                        "ភាគរយលក់ចេញ៖ 100% + 40% = 140%",
+                        "តម្លៃដើម៖ (65 × 100) ÷ 140 = 46.43 ដុល្លារ"
+                    ],
+                    reallife: "បើប្អូនចង់ក្លាយជាសហគ្រិន ឬអ្នកលក់អនឡាញដ៏ជោគជ័យ ប្អូនត្រូវដឹងពីរបៀបគិតតម្លៃដើមដើម្បីធានាថាមិនលក់ខាតលុយ!"
+                },
+                lab: {
+                    inputs: [
+                        { id: "v1", label: "តម្លៃលក់ចេញ ($)", val: 65, min: 10, max: 500, step: 5 },
+                        { id: "v2", label: "ភាគរយចំណេញ (%)", val: 40, min: 5, max: 100, step: 5 }
+                    ],
+                    calc: (v1, v2) => {
+                        const cost = (v1 * 100) / (100 + v2);
+                        return `
+                            <div><strong>ភាគរយលក់៖</strong> 100% + ${v2}% = ${100+v2}%</div>
+                            <div class="text-xl text-yellow-300">តម្លៃដើម = (${v1} × 100) ÷ ${100+v2} = <span class="text-green-300 font-bold">$${cost.toFixed(2)}</span></div>
+                        `;
+                    }
+                },
+                quiz: {
+                    question: "តើតម្លៃដើមរបស់កង់នោះមានតម្លៃប៉ុន្មានដុល្លារ? (សូមសរសេរចម្លើយជាលេខក្បៀសពីរខ្ទង់ ឧ. 46.43)",
+                    hint: "គណនា (65 × 100) ÷ 140"
+                }
+            },
+            {
+                id: 6,
+                title: "ចែកលុយលោកយាយទាំងពីរ",
+                icon: "👵",
+                original: "យាយ ណាន និង យាយ នួន រកស៊ីរួមគ្នាបានចំណេញ 100,000 រៀល។ គេដឹងថាយាយ ណាន ទទួលបាន 30% នៃប្រាក់ចំណេញនេះ ហើយយាយ នួន ទទួលបាន 40% នៃប្រាក់ចំណេញដែលនៅសល់។ តើលុយដែលនៅសល់ចុងក្រោយមានចំនួនប៉ុន្មាន?",
+                badge: "បេសកកម្ម ០៦",
+                unit: "រៀល (៛)",
+                answer: 42000,
+                learn: {
+                    info: [
+                        "ប្រាក់ចំណេញសរុប = 100,000 រៀល",
+                        "ចំណែកយាយ ណាន = 30% នៃប្រាក់សរុប",
+                        "ចំណែកយាយ នួន = 40% នៃប្រាក់ដែលនៅសល់"
+                    ],
+                    tips: "ត្រូវប្រយ័ត្ន! យាយនួនបានលុយចេញពី 'លុយដែលសល់ពីយាយណាន' មិនមែនលុយសរុបទេ។ ដូច្នេះត្រូវរកលុយសល់លើកទី១សិន។",
+                    steps: [
+                        "ប្រាក់យាយ ណាន៖ 100,000 × 30% = 30,000 រៀល",
+                        "ប្រាក់នៅសល់៖ 100,000 - 30,000 = 70,000 រៀល",
+                        "ប្រាក់យាយ នួន៖ 70,000 × 40% = 28,000 រៀល",
+                        "ប្រាក់នៅសល់ចុងក្រោយ៖ 70,000 - 28,000 = 42,000 រៀល"
+                    ],
+                    reallife: "មេរៀននេះបង្ហាញពីការបែងចែកភាគលាភជាមួយដៃគូរកស៊ី (Business Partners) ប្រកបដោយភាពយុត្តិធម៌ និងតម្លាភាព!"
+                },
+                lab: {
+                    inputs: [
+                        { id: "v1", label: "ប្រាក់ចំណេញសរុប (៛)", val: 100000, min: 10000, max: 500000, step: 10000 },
+                        { id: "v2", label: "យាយណានបាន (%)", val: 30, min: 10, max: 90, step: 5 },
+                        { id: "v3", label: "យាយនួនបានពីលុយសល់ (%)", val: 40, min: 10, max: 90, step: 5 }
+                    ],
+                    calc: (v1, v2, v3) => {
+                        const nan = v1 * (v2 / 100);
+                        const rem1 = v1 - nan;
+                        const nuon = rem1 * (v3 / 100);
+                        const finalRem = rem1 - nuon;
+                        return `
+                            <div><strong>១. យាយ ណាន បាន៖</strong> ${v1.toLocaleString()} × ${v2}% = ${nan.toLocaleString()} ៛ (សល់៖ ${rem1.toLocaleString()} ៛)</div>
+                            <div><strong>២. យាយ នួន បាន៖</strong> ${rem1.toLocaleString()} × ${v3}% = ${nuon.toLocaleString()} ៛</div>
+                            <div class="text-xl text-yellow-300">ប្រាក់នៅសល់ចុងក្រោយ = <span class="text-green-300 font-bold">${finalRem.toLocaleString()} ៛</span></div>
+                        `;
+                    }
+                },
+                quiz: {
+                    question: "តើប្រាក់ដែលនៅសល់ចុងក្រោយមានចំនួនប៉ុន្មានរៀល?",
+                    hint: "ប្រាក់សល់ក្រោយយាយណានគឺ 70,000៛។ យាយនួនយក 40% × 70,000 = 28,000៛។"
+                }
+            },
+            {
+                id: 7,
+                title: "មហាសេដ្ឋីអចលនទ្រព្យ",
+                icon: "🏠",
+                original: "ផ្ទះមួយខ្នងតម្លៃ 4,000 ដុល្លារ ហើយគេលក់វិញបានតម្លៃ 5,400 ដុល្លារ។ តើគេលក់ផ្ទះនេះចំណេញបានប៉ុន្មានភាគរយ?",
+                badge: "បេសកកម្ម ០៧",
+                unit: "ភាគរយ (%)",
+                answer: 35,
+                learn: {
+                    info: [
+                        "តម្លៃទិញចូល (តម្លៃដើម) = 4,000 ដុល្លារ",
+                        "តម្លៃលក់ចេញ = 5,400 ដុល្លារ"
+                    ],
+                    tips: "ដំបូងត្រូវរកប្រាក់ចំណេញជាដុល្លារសិន (តម្លៃលក់ - តម្លៃទិញ)។ បន្ទាប់មកយកប្រាក់ចំណេញទៅធៀបនឹងតម្លៃដើម រួចគុណនឹង 100%។",
+                    steps: [
+                        "ប្រាក់ចំណេញ៖ 5,400 - 4,000 = 1,400 ដុល្លារ",
+                        "ភាគរយចំណេញ៖ (1,400 ÷ 4,000) × 100 = 35%"
+                    ],
+                    reallife: "នេះហៅថា ការវិនិយោគលើវិស័យអចលនទ្រព្យ (Real Estate)។ ការចេះរកភាគរយជួយឱ្យយើងដឹងថាការវិនិយោគនោះចំណេញកម្រិតណា!"
+                },
+                lab: {
+                    inputs: [
+                        { id: "v1", label: "តម្លៃទិញចូល ($)", val: 4000, min: 1000, max: 10000, step: 100 },
+                        { id: "v2", label: "តម្លៃលក់ចេញ ($)", val: 5400, min: 1100, max: 15000, step: 100 }
+                    ],
+                    calc: (v1, v2) => {
+                        const profit = v2 - v1;
+                        const pct = ((profit / v1) * 100).toFixed(1);
+                        return `
+                            <div><strong>ប្រាក់ចំណេញ៖</strong> ${v2} - ${v1} = $${profit}</div>
+                            <div class="text-xl text-yellow-300">ភាគរយចំណេញ = ($${profit} ÷ $${v1}) × 100 = <span class="text-green-300 font-bold">${pct}%</span></div>
+                        `;
+                    }
+                },
+                quiz: {
+                    question: "តើគេលក់ផ្ទះនេះចំណេញបានប៉ុន្មានភាគរយ?",
+                    hint: "ប្រាក់ចំណេញគឺ 1,400 ដុល្លារ។ យក (1,400 ÷ 4,000) × 100"
+                }
+            },
+            {
+                id: 8,
+                title: "ម៉ូតូបាត់បង់តម្លៃ",
+                icon: "🏍️",
+                original: "ម៉ូតូមួយគ្រឿងតម្លៃ 12,000 រៀល។ គេលក់វាខាតអស់ 20%។ តើគេលក់ម៉ូតូនោះខាតអស់ប្រាក់ប៉ុន្មាន?",
+                badge: "បេសកកម្ម ០៨",
+                unit: "រៀល (៛)",
+                answer: 2400,
+                learn: {
+                    info: [
+                        "តម្លៃដើមម៉ូតូ = 12,000 រៀល",
+                        "ភាគរយខាត = 20%"
+                    ],
+                    tips: "ប្រធានសួររកតែ 'ប្រាក់ដែលខាត' ប៉ុណ្ណោះ មិនមែនសួរតម្លៃលក់ចេញទេ។ ដូច្នេះយើងគ្រាន់តែរក 20% នៃ 12,000 រៀល ជាការស្រេច។",
+                    steps: [
+                        "ប្រាក់ខាត៖ 12,000 × 20% = 2,400 រៀល"
+                    ],
+                    reallife: "របស់ប្រើប្រាស់ដូចជា ម៉ូតូ ទូរសព្ទ ឬកុំព្យូទ័រ តែងតែធ្លាក់ថ្លៃ (Depreciation) នៅពេលប្រើរួច។ ការដឹងពីអត្រាខាតជួយឱ្យយើងរៀបចំផែនការទិញ!"
+                },
+                lab: {
+                    inputs: [
+                        { id: "v1", label: "តម្លៃដើម (៛)", val: 12000, min: 1000, max: 100000, step: 1000 },
+                        { id: "v2", label: "ភាគរយខាត (%)", val: 20, min: 1, max: 99, step: 1 }
+                    ],
+                    calc: (v1, v2) => {
+                        const loss = v1 * (v2 / 100);
+                        return `
+                            <div><strong>រូបមន្ត៖</strong> តម្លៃដើម × ភាគរយខាត</div>
+                            <div class="text-xl text-yellow-300">${v1.toLocaleString()} × ${v2}% = <span class="text-red-400 font-bold">${loss.toFixed(0)} ៛</span></div>
+                        `;
+                    }
+                },
+                quiz: {
+                    question: "តើគេលក់ម៉ូតូនោះខាតអស់ប្រាក់ប៉ុន្មានរៀល?",
+                    hint: "គណនា 12,000 × 20%"
+                }
+            },
+            {
+                id: 9,
+                title: "ផ្សារទំនើបស្ករស",
+                icon: "🧂",
+                original: "ស្ករស 1kg ថ្លៃ 2,000 រៀល ឥឡូវចុះថ្លៃមកនៅសល់ 1,600 រៀល។ តើវាចុះថ្លៃអស់ប៉ុន្មានភាគរយ?",
+                badge: "បេសកកម្ម ០៩",
+                unit: "ភាគរយ (%)",
+                answer: 20,
+                learn: {
+                    info: [
+                        "តម្លៃដើម = 2,000 រៀល",
+                        "តម្លៃថ្មី = 1,600 រៀល"
+                    ],
+                    tips: "ដំបូងត្រូវរកប្រាក់ដែលចុះថោក (តម្លៃដើម - តម្លៃថ្មី)។ បន្ទាប់មកយកប្រាក់ដែលចុះថោកនោះធៀបនឹងតម្លៃដើម រួចគុណនឹង 100%.",
+                    steps: [
+                        "ប្រាក់ចុះថ្លៃ៖ 2,000 - 1,600 = 400 រៀល",
+                        "ភាគរយចុះថ្លៃ៖ (400 ÷ 2,000) × 100 = 20%"
+                    ],
+                    reallife: "ការចុះថ្លៃទំនិញលើទីផ្សារជួយឱ្យយើងទិញអីវ៉ាន់បានចំណេញច្រើន! ការចេះគណនាភាគរយជួយឱ្យយើងប្រៀបធៀបផលិតផលបញ្ចុះតម្លៃផ្សេងៗ។"
+                },
+                lab: {
+                    inputs: [
+                        { id: "v1", label: "តម្លៃដើម (៛)", val: 2000, min: 1000, max: 10000, step: 100 },
+                        { id: "v2", label: "តម្លៃថ្មី (៛)", val: 1600, min: 500, max: 9900, step: 100 }
+                    ],
+                    calc: (v1, v2) => {
+                        const diff = v1 - v2;
+                        const pct = ((diff / v1) * 100).toFixed(1);
+                        return `
+                            <div><strong>ប្រាក់ខុសគ្នា៖</strong> ${v1} - ${v2} = ${diff} ៛</div>
+                            <div class="text-xl text-yellow-300">ភាគរយចុះថ្លៃ = (${diff} ÷ ${v1}) × 100 = <span class="text-green-300 font-bold">${pct}%</span></div>
+                        `;
+                    }
+                },
+                quiz: {
+                    question: "តើស្ករសចុះថ្លៃអស់ប៉ុន្មានភាគរយ?",
+                    hint: "ប្រាក់ចុះថោកគឺ 400៛។ យក (400 ÷ 2,000) × 100"
+                }
+            },
+            {
+                id: 10,
+                title: "រោងចក្រត្បាញកន្ត្រក",
+                icon: "🧺",
+                original: "ថ្ងៃទី១ ធ្វើការងារបាន 25 កន្ត្រក ខូច 22 កន្ត្រក។ ថ្ងៃទី២ ធ្វើបាន 20 កន្ត្រក ខូច 18 កន្ត្រក។ តើការងារថ្ងៃណាដែលធ្វើបានល្អជាង?",
+                badge: "បេសកកម្ម ១០",
+                unit: "ថ្ងៃទី (១ ឬ ២)",
+                answer: 1,
+                learn: {
+                    info: [
+                        "ថ្ងៃទី១៖ ផលិតបានសរុប = 25, ខូច = 22, ល្អ = 25 - 22 = 3 កន្ត្រក",
+                        "ថ្ងៃទី២៖ ផលិតបានសរុប = 20, ខូច = 18, ល្អ = 20 - 18 = 2 កន្ត្រក"
+                    ],
+                    tips: "យើងមិនអាចប្រៀបធៀបតែចំនួនកន្ត្រកល្អផ្ទាល់ទេ ព្រោះផលិតផលសរុបមិនដូចគ្នា។ ត្រូវរក 'ភាគរយកន្ត្រកល្អ' នៃថ្ងៃនីមួយៗរួចធៀបគ្នា!",
+                    steps: [
+                        "ភាគរយល្អថ្ងៃទី១៖ (3 ÷ 25) × 100 = 12%",
+                        "ភាគរយល្អថ្ងៃទី២៖ (2 ÷ 20) × 100 = 10%",
+                        "ដោយសារ 12% > 10% នាំឱ្យថ្ងៃទី១ ធ្វើការបានល្អជាង។"
+                    ],
+                    reallife: "នៅក្នុងរោងចក្រទំនើប គេប្រើវិធីនេះដើម្បីវាស់ស្ទង់គុណភាពការងារ (Quality Control - QC) និងកែលម្អផលិតកម្ម!"
+                },
+                lab: {
+                    inputs: [
+                        { id: "v1", label: "ថ្ងៃ១ ផលិតសរុប", val: 25, min: 5, max: 100, step: 1 },
+                        { id: "v2", label: "ថ្ងៃ១ ខូច", val: 22, min: 0, max: 100, step: 1 },
+                        { id: "v3", label: "ថ្ងៃ២ ផលិតសរុប", val: 20, min: 5, max: 100, step: 1 },
+                        { id: "v4", label: "ថ្ងៃ២ ខូច", val: 18, min: 0, max: 100, step: 1 }
+                    ],
+                    calc: (v1, v2, v3, v4) => {
+                        const good1 = Math.max(0, v1 - v2);
+                        const good2 = Math.max(0, v3 - v4);
+                        const pct1 = ((good1 / v1) * 100).toFixed(1);
+                        const pct2 = ((good2 / v3) * 100).toFixed(1);
+                        const best = parseFloat(pct1) > parseFloat(pct2) ? "ថ្ងៃទី ១" : "ថ្ងៃទី ២";
+                        return `
+                            <div><strong>ថ្ងៃទី១៖</strong> ល្អ = ${good1} (${pct1}%)</div>
+                            <div><strong>ថ្ងៃទី២៖</strong> ល្អ = ${good2} (${pct2}%)</div>
+                            <div class="text-xl text-yellow-300">ថ្ងៃដែលធ្វើបានល្អជាង៖ <span class="text-green-300 font-bold">${best}</span></div>
+                        `;
+                    }
+                },
+                quiz: {
+                    question: "តើការងារថ្ងៃណាដែលធ្វើបានល្អជាង? (សូមឆ្លើយជាលេខ 1 សម្រាប់ថ្ងៃទី១ ឬ 2 សម្រាប់ថ្ងៃទី២)",
+                    hint: "ភាគរយល្អ៖ ថ្ងៃទី១ គឺ 12% ចំណែកថ្ងៃទី២ គឺ 10%"
+                }
+            },
+            {
+                id: 11,
+                title: "បោះឆ្នោតប្រធានថ្នាក់",
+                icon: "🗳️",
+                original: "ក្នុងការបោះឆ្នោតជ្រើសរើសប្រធានថ្នាក់មួយ ក្នុងចំណោមសិស្ស 40 នាក់ មានសិស្ស 2 នាក់មិនបានបោះឆ្នោត។ តើមានសិស្សបោះឆ្នោតប៉ុន្មានភាគរយ?",
+                badge: "បេសកកម្ម ១១",
+                unit: "ភាគរយ (%)",
+                answer: 95,
+                learn: {
+                    info: [
+                        "ចំនួនសិស្សសរុប = 40 នាក់",
+                        "សិស្សមិនបានបោះឆ្នោត = 2 នាក់"
+                    ],
+                    tips: "ត្រូវរកចំនួនសិស្សដែលបានបោះឆ្នោតពិតប្រាកដជាមុនសិន រួចទើបយកចំនួននោះទៅធៀបភាគរយនឹងសិស្សសរុបទាំងអស់។",
+                    steps: [
+                        "ចំនួនសិស្សបោះឆ្នោត៖ 40 - 2 = 38 នាក់",
+                        "ភាគរយអ្នកបោះឆ្នោត៖ (38 ÷ 40) × 100 = 95%"
+                    ],
+                    reallife: "នេះជាមូលដ្ឋានគ្រឹះនៃ ប្រជាធិបតេយ្យ។ នៅក្នុងការបោះឆ្នោតជាតិ គេតែងតែវាស់អត្រាអ្នកចូលរួមបោះឆ្នោត (Voter Turnout %) ដើម្បីដឹងពីការចូលរួមពិតប្រាកដ!"
+                },
+                lab: {
+                    inputs: [
+                        { id: "v1", label: "សិស្សសរុប (នាក់)", val: 40, min: 10, max: 100, step: 1 },
+                        { id: "v2", label: "អវត្តមានមិនបោះ (នាក់)", val: 2, min: 0, max: 50, step: 1 }
+                    ],
+                    calc: (v1, v2) => {
+                        const voted = Math.max(0, v1 - v2);
+                        const pct = ((voted / v1) * 100).toFixed(1);
+                        return `
+                            <div><strong>ចំនួនសិស្សបោះឆ្នោត៖</strong> ${v1} - ${v2} = ${voted} នាក់</div>
+                            <div class="text-xl text-yellow-300">ភាគរយបោះឆ្នោត = (${voted} ÷ ${v1}) × 100 = <span class="text-green-300 font-bold">${pct}%</span></div>
+                        `;
+                    }
+                },
+                quiz: {
+                    question: "តើមានសិស្សបោះឆ្នោតប៉ុន្មានភាគរយ?",
+                    hint: "សិស្សបោះឆ្នោតគឺ 38 នាក់។ គណនា (38 ÷ 40) × 100"
+                }
+            },
+            {
+                id: 12,
+                title: "សង្វៀនប្រឡងជាប់",
+                icon: "🎓",
+                original: "ក្នុងការប្រឡងមួយក្នុងចំណោមសិស្ស 24 នាក់ មានសិស្ស 6 នាក់ប្រឡងធ្លាក់។ តើមានសិស្សប្រឡងជាប់ប៉ុន្មានភាគរយ?",
+                badge: "បេសកកម្ម ១២",
+                unit: "ភាគរយ (%)",
+                answer: 75,
+                learn: {
+                    info: [
+                        "ចំនួនសិស្សទាំងអស់ = 24 នាក់",
+                        "សិស្សប្រឡងធ្លាក់ = 6 នាក់"
+                    ],
+                    tips: "ដំបូងត្រូវរកចំនួនសិស្សដែលប្រឡងជាប់ជាមុនសិន រួចទើបយកចំនួននោះទៅធៀបភាគរយនឹងសិស្សសរុប។",
+                    steps: [
+                        "ចំនួនសិស្សប្រឡងជាប់៖ 24 - 6 = 18 នាក់",
+                        "ភាគរយសិស្សជាប់៖ (18 ÷ 24) × 100 = 75%"
+                    ],
+                    reallife: "ការដឹងពីភាគរយសិស្សប្រឡងជាប់ ជួយឱ្យលោកគ្រូអ្នកគ្រូកែលម្អវិធីសាស្ត្របង្រៀនឱ្យកាន់តែទាក់ទាញ និងជួយសិស្សរៀនខ្សោយបានទាន់ពេល!"
+                },
+                lab: {
+                    inputs: [
+                        { id: "v1", label: "សិស្សសរុប (នាក់)", val: 24, min: 5, max: 200, step: 1 },
+                        { id: "v2", label: "ប្រឡងធ្លាក់ (នាក់)", val: 6, min: 0, max: 100, step: 1 }
+                    ],
+                    calc: (v1, v2) => {
+                        const passed = Math.max(0, v1 - v2);
+                        const pct = ((passed / v1) * 100).toFixed(1);
+                        return `
+                            <div><strong>ចំនួនសិស្សប្រឡងជាប់៖</strong> ${v1} - ${v2} = ${passed} នាក់</div>
+                            <div class="text-xl text-yellow-300">ភាគរយប្រឡងជាប់ = (${passed} ÷ ${v1}) × 100 = <span class="text-green-300 font-bold">${pct}%</span></div>
+                        `;
+                    }
+                },
+                quiz: {
+                    question: "តើមានសិស្សប្រឡងជាប់ប៉ុន្មានភាគរយ?",
+                    hint: "សិស្សជាប់មាន 18 នាក់។ គណនា (18 ÷ 24) × 100"
+                }
+            }
+        ];
+
+        // Global Game State (Initialize from localStorage if available)
+        let coins = parseInt(localStorage.getItem('math_quest_coins')) || 0;
+        let completedQuests = JSON.parse(localStorage.getItem('math_quest_completed')) || [];
+        let activeQuest = null;
+        let currentTab = 'learn';
+
+        // Update Global UI Scoreboard
+        function updateScoreboard() {
+            document.getElementById('score-coins').innerText = coins;
+            document.getElementById('score-quests').innerText = `${completedQuests.length}/12`;
+            localStorage.setItem('math_quest_coins', coins);
+            localStorage.setItem('math_quest_completed', JSON.stringify(completedQuests));
+        }
+
+        // Reset Game Progress
+        function resetGame() {
+            if (confirm("តើប្អូនពិតជាចង់ចាប់ផ្តើមដំណើរផ្សងព្រេងឡើងវិញមែនទេ? កាក់ទាំងអស់នឹងត្រូវកំណត់មក ០ វិញ!")) {
+                coins = 0;
+                completedQuests = [];
+                updateScoreboard();
+                renderQuestList();
+                closeWorkspace();
+            }
+        }
+
+        // Render the 12 Quest Cards
+        function renderQuestList() {
+            const listContainer = document.getElementById('quest-list');
+            listContainer.innerHTML = '';
+
+            questsData.forEach((quest) => {
+                const isCompleted = completedQuests.includes(quest.id);
+                const isActive = activeQuest && activeQuest.id === quest.id;
+                
+                let cardClass = "gaming-card p-4 rounded-xl border flex items-center justify-between cursor-pointer ";
+                if (isActive) {
+                    cardClass += "bg-purple-950/40 border-purple-500 shadow-lg shadow-purple-500/20";
+                } else if (isCompleted) {
+                    cardClass += "bg-[#181d2a] border-green-500/30 hover:border-green-500/60";
+                } else {
+                    cardClass += "bg-[#11131e] border-purple-900/30 hover:border-purple-500/30";
+                }
+
+                const badgeHtml = isCompleted 
+                    ? `<span class="text-xs bg-green-900/50 text-green-400 font-bold px-2 py-0.5 rounded-full"><i class="fa-solid fa-circle-check mr-1"></i>ឆ្លងវគ្គហើយ</span>`
+                    : `<span class="text-xs bg-purple-950 text-purple-400 font-bold px-2 py-0.5 rounded-full">${quest.badge}</span>`;
+
+                const scoreHtml = isCompleted 
+                    ? `<span class="text-xs text-yellow-400 font-semibold"><i class="fa-solid fa-coins"></i> +10</span>`
+                    : `<span class="text-xs text-gray-500"><i class="fa-solid fa-coins"></i> រង្វាន់ 10 កាក់</span>`;
+
+                listContainer.innerHTML += `
+                    <div class="${cardClass}" onclick="selectQuest(${quest.id})">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">${quest.icon}</span>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    ${badgeHtml}
+                                    ${scoreHtml}
+                                </div>
+                                <h3 class="text-sm font-bold text-white mt-1">${quest.title}</h3>
+                            </div>
+                        </div>
+                        <div class="text-purple-400">
+                            <i class="fa-solid ${isCompleted ? 'fa-circle-play text-green-400' : 'fa-chevron-right'}"></i>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Select a quest to load into Workspace
+        function selectQuest(id) {
+            activeQuest = questsData.find(q => q.id === id);
+            
+            // Switch view
+            document.getElementById('welcome-panel').classList.add('hidden');
+            document.getElementById('quest-workspace').classList.remove('hidden');
+
+            // Set Header information
+            document.getElementById('active-quest-icon').innerText = activeQuest.icon;
+            document.getElementById('active-quest-badge').innerText = activeQuest.badge;
+            document.getElementById('active-quest-title').innerText = activeQuest.title;
+
+            // Load original question
+            document.getElementById('quest-original').innerText = activeQuest.original;
+
+            // Load pedagogic content (Learn tab)
+            // 1. Info
+            const infoList = document.getElementById('learn-info');
+            infoList.innerHTML = '';
+            activeQuest.learn.info.forEach(item => {
+                infoList.innerHTML += `<div class="flex items-center gap-2"><span class="text-cyan-500">•</span> <span>${item}</span></div>`;
+            });
+
+            // 2. Tips
+            document.getElementById('learn-tips').innerText = activeQuest.learn.tips;
+
+            // 3. Steps
+            const stepsList = document.getElementById('learn-steps');
+            stepsList.innerHTML = '';
+            activeQuest.learn.steps.forEach(step => {
+                stepsList.innerHTML += `<div class="bg-[#0d0e15] p-2.5 rounded border border-purple-900/30">${step}</div>`;
+            });
+
+            // 4. Real-life
+            document.getElementById('learn-reallife').innerText = activeQuest.learn.reallife;
+
+            // Load Lab controls and computation screen
+            setupLab();
+
+            // Load Quiz
+            document.getElementById('quiz-question').innerText = activeQuest.quiz.question;
+            document.getElementById('quiz-unit-badge').innerText = activeQuest.unit;
+            document.getElementById('quiz-answer-input').value = '';
+            document.getElementById('quiz-feedback').classList.add('hidden');
+
+            // Refresh cards to highlight current active card
+            renderQuestList();
+            
+            // Always default to Learn tab on select
+            switchTab('learn');
+        }
+
+        // Setup the Interactive Lab controls dynamically
+        function setupLab() {
+            const controlsContainer = document.getElementById('lab-controls');
+            controlsContainer.innerHTML = '';
+
+            activeQuest.lab.inputs.forEach((input, index) => {
+                controlsContainer.innerHTML += `
+                    <div class="flex flex-col gap-2">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-purple-300 font-semibold">${input.label}</span>
+                            <span class="bg-[#0d0e15] px-2 py-0.5 rounded text-yellow-400 font-mono font-bold" id="lab-val-lbl-${input.id}">${input.val}</span>
+                        </div>
+                        <input type="range" id="lab-input-${input.id}" min="${input.min}" max="${input.max}" step="${input.step}" value="${input.val}" oninput="updateLabCalculation()" class="w-full accent-purple-500 bg-[#0d0e15] h-2 rounded-lg cursor-pointer">
+                    </div>
+                `;
+            });
+
+            updateLabCalculation();
+        }
+
+        // Live calculation updater for Lab
+        function updateLabCalculation() {
+            const inputValues = activeQuest.lab.inputs.map(input => {
+                const el = document.getElementById(`lab-input-${input.id}`);
+                const val = parseFloat(el.value);
+                document.getElementById(`lab-val-lbl-${input.id}`).innerText = val;
+                return val;
+            });
+
+            const resultHtml = activeQuest.lab.calc(...inputValues);
+            document.getElementById('lab-calculation').innerHTML = resultHtml;
+        }
+
+        // Tab switcher
+        function switchTab(tab) {
+            currentTab = tab;
+            const tabs = ['learn', 'lab', 'quiz'];
+            
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                const content = document.getElementById(`content-${t}`);
+                
+                if (t === tab) {
+                    btn.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-white bg-purple-600 transition-all flex items-center justify-center gap-2";
+                    content.classList.remove('hidden');
+                } else {
+                    btn.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-gray-400 hover:text-white transition-all flex items-center justify-center gap-2";
+                    content.classList.add('hidden');
+                }
+            });
+        }
+
+        // Close workspace
+        function closeWorkspace() {
+            activeQuest = null;
+            document.getElementById('welcome-panel').classList.remove('hidden');
+            document.getElementById('quest-workspace').classList.add('hidden');
+            renderQuestList();
+        }
+
+        // Submit Quiz Answer
+        function submitAnswer() {
+            if (!activeQuest) return;
+
+            const inputEl = document.getElementById('quiz-answer-input');
+            const userAnswer = parseFloat(inputEl.value);
+            const feedbackBox = document.getElementById('quiz-feedback');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackDesc = document.getElementById('feedback-desc');
+
+            if (isNaN(userAnswer)) {
+                feedbackBox.className = "p-4 rounded-xl flex items-center gap-3 bg-red-950/50 border border-red-500/30 text-red-400";
+                feedbackIcon.innerText = "⚠️";
+                feedbackTitle.innerText = "សូមបញ្ចូលលេខចម្លើយ!";
+                feedbackDesc.innerText = "ប្អូនត្រូវតែគណនា រួចសរសេរចម្លើយជាលេខជាមុនសិន។";
+                feedbackBox.classList.remove('hidden');
+                playSound('wrong');
+                return;
+            }
+
+            // Margin of error for float rounding (e.g., Quest 5 is 46.43)
+            const isCorrect = Math.abs(userAnswer - activeQuest.answer) < 0.1;
+
+            if (isCorrect) {
+                feedbackBox.className = "p-4 rounded-xl flex items-center gap-3 bg-green-950/50 border border-green-500/30 text-green-400";
+                feedbackIcon.innerText = "🎉";
+                feedbackTitle.innerText = "ឆ្លើយបានត្រឹមត្រូវបំផុត! អស្ចារ្យណាស់!";
+                
+                const isNewCompletion = !completedQuests.includes(activeQuest.id);
+                if (isNewCompletion) {
+                    completedQuests.push(activeQuest.id);
+                    coins += 10;
+                    feedbackDesc.innerText = "ប្អូនទទួលបានចំណាត់ថ្នាក់ផ្កាយ ៥ និងរង្វាន់កាក់មាស 🪙 +10 កាក់!";
+                    playSound('level-up');
+                    triggerConfetti();
+                } else {
+                    feedbackDesc.innerText = "ប្អូនឆ្លើយត្រូវម្តងទៀតហើយ! ប៉ុន្តែប្អូនបានសន្សំកាក់ពីវគ្គនេះរួចហើយ។ ទៅសាកល្បងវគ្គផ្សេងទៀតណា!";
+                    playSound('coin');
+                }
+
+                updateScoreboard();
+                renderQuestList();
+            } else {
+                feedbackBox.className = "p-4 rounded-xl flex items-center gap-3 bg-red-950/50 border border-red-500/30 text-red-400";
+                feedbackIcon.innerText = "❌";
+                feedbackTitle.innerText = "មិនទាន់ត្រឹមត្រូវទេ សាកល្បងម្តងទៀត!";
+                feedbackDesc.innerText = `គន្លឹះ៖ ${activeQuest.quiz.hint}`;
+                playSound('wrong');
+            }
+
+            feedbackBox.classList.remove('hidden');
+        }
+
+        // Visual Confetti Effect on correct answer
+        function triggerConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3b82f6'];
+            
+            for (let i = 0; i < 60; i++) {
+                const conf = document.createElement('div');
+                const size = Math.random() * 8 + 6;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                conf.style.position = 'absolute';
+                conf.style.width = size + 'px';
+                conf.style.height = size + 'px';
+                conf.style.background = color;
+                conf.style.borderRadius = '50%';
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.top = '-10px';
+                conf.style.opacity = Math.random();
+                conf.style.transform = `rotate(${Math.random() * 360}deg)`;
+                
+                container.appendChild(conf);
+
+                let y = -10;
+                let x = parseFloat(conf.style.left);
+                const speed = Math.random() * 5 + 3;
+                const swing = Math.random() * 2 - 1;
+
+                const interval = setInterval(() => {
+                    y += speed;
+                    x += swing;
+                    conf.style.top = y + 'px';
+                    conf.style.left = x + 'vw';
+                    if (y > window.innerHeight) {
+                        clearInterval(interval);
+                        conf.remove();
+                    }
+                }, 16);
+            }
+        }
+
+        // Initial setup
+        window.onload = function() {
+            renderQuestList();
+            updateScoreboard();
+        };
+    </script>
+</body>
+</html>
+
+```
